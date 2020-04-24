@@ -1,0 +1,21 @@
+html
+  include partials/head
+
+  body
+    h1= schittscreek.name
+
+    h2 Occupation
+    ul
+      for occupation in schittscreek.occupation
+        li= occupation
+
+    h2 Quote
+    ul
+      for quote in schittscreek.quote
+        li= quote
+
+    h2 Played By
+    ul
+      for playedBy in schittscreek.playedBy
+        li = actor
+          
