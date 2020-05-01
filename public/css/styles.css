@@ -1,0 +1,41 @@
+* {
+  background-color: #c99e9c;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Didot, "Didot LT STD", "Hoefler Text", Garamond, "Times New Roman", serif; 
+}
+
+.title {
+  color: #f1f1f1;
+  font-weight: 100px;
+  font-size: 60px;
+  text-align: center;
+  margin-top: 30px auto;
+}
+
+h2 {
+  font-size: 30px;
+  margin-bottom: 50px;
+  margin-top: 10px;
+  margin-left: 30px;
+}
+
+.methods {
+  color:#606469;
+  font-style: italic;
+  font-weight: bold;
+  padding: 5px;
+  list-style: none;
+  margin-left: 5px;
+  font-size: 20px;
+}
+
+.methodsInfo {
+  list-style: none;
+  margin-bottom: 60px;
+  margin-left: 30px;
+  font-size: 15px;
+}

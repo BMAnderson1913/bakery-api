@@ -40,6 +40,12 @@ const characterData = [{
   occupation: 'History Teacher',
   quote: 'That was...different.',
   playedBy: 'Jennifer Robertson',
+}, {
+  id: 8,
+  name: 'Mutt Schitt',
+  occupation: 'Unemployed',
+  quote: '.',
+  playedBy: 'Tim Rozon',
 }]
 
 module.exports = characterData

@@ -5,8 +5,9 @@
   "main": ".index.js",
   "scripts": {
     "dev": "./node_modules/.bin/nodemon index.js",
-    "lint": "./node_modules/.bin/eslint --format codeframe .",
-    "lint:fix": "./node_modules/.bin/eslint --format codeframe --fix .",
+    "eslint": "./node_modules/.bin/eslint --format codeframe .",
+    "lint": "npm run puglint && npm run eslint",
+    "lint:fix": "./node_modules/.bin/eslint --fix --format codeframe --fix .",
     "puglint": "./node_modules/.bin/pug-lint ."
   },
   "repository": {

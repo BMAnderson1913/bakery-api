@@ -1,21 +1,68 @@
 html
-  include partials/head
+head
+    link(rel="stylesheet" href="/css/styles.css")
 
-  body
-    h1= schittscreek.name
+    body
+     h1.title Welcome to Schitt's Creek!
+      h2 Select a Method:
+      li.methodsInfo 
+        p 
+          ul.methods GET/allCharacters
+        div#getAll
+            p Method: GET 
+            p Route: http://localhost:4053/characters/allCharacters 
+            p Headers:   
+            p Description: Returns a list of all of the characters in Schitt's Creek.
+      li.methodsInfo 
+        p 
+          ul.methods GET/characterByName
+        div 
+            p Method: GET 
+            p Route: http://localhost:4053/characters/characterByName 
+            p Headers:   
+            p Description: Returns the character with the name provided in the route.  
+      li.methodsInfo 
+        p
+          ul.methods GET/characterByQuote
+        div 
+            p Method: GET 
+            p Route: http://localhost:4053/characters/characterByQuote
+            p Headers:   
+            p Description: Returns the character associated with the provided quote. 
+      li.methodsInfo 
+        p 
+          ul.methods GET/characterByOccupation
+        div 
+            p Method: GET 
+            p Route: http://localhost:4053/characters/characterByOccupation
+            p Headers:   
+            p Description: Returns the character associated with the provided occupation.
+      li.methodsInfo 
+        p 
+          ul.methods GET/characterbyActor
+        div 
+              p Method: GET 
+              p Route: http://localhost:4053/characters/characterbyActor
+              p Headers:    
+              p Description: Returns the character associated with the provided actor. 
+      li.methodsInfo
+        p
+          ul.methods POST/allCharacters
+        div 
+            p Method: POST 
+            p Route: http://localhost:4053/characters/allCharacters
+            p Headers: Content-Type application/json
+            p Required Fields: { "name": "Ted Mullens", "occupation": "Veterinarian", "quote": "It's always gifts for the dogs, and never for me." , "playedBy": "Dustin Milligan" }
+            p Description: Creates a new character from the data provided in the body. 
+      li.methodsInfo 
+        p       
+          ul.methods DELETE/characterByName
+        div 
+            p Method: DELETE 
+            p Route: http://localhost:4053/characters/characterByName 
+            p Headers:   
+            p Description: Deletes the the character with the name provided in the route.
+      li.methodsInfo 
+         p       
+       
 
-    h2 Occupation
-    ul
-      for occupation in schittscreek.occupation
-        li= occupation
-
-    h2 Quote
-    ul
-      for quote in schittscreek.quote
-        li= quote
-
-    h2 Played By
-    ul
-      for playedBy in schittscreek.playedBy
-        li = actor
-          
