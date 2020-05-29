@@ -10,21 +10,25 @@ const getAllHosts = async (request, response) => {
   }
 }
 
-const getHostsWithIdentifier = async (request, response) => {
+const getHostById = async (request, response) => {
   try {
-    const { identifier } = request.params
-    const hostsWithIdentifier = await models.hosts.findOne({
-      where: { identifier },
-      include: [{ include: [{ model: models.companies }], model: models.podcasts }],
+    const { id } = request.params
+
+    const host = await models.hosts.findOne({
+      where: { id },
+      include: [{
+        model: models.podcasts,
+        include: [{ model: models.companies }]
+      }]
     })
 
-    return hostsWithIdentifier
-      ? response.send(hostsWithIdentifier)
+    return host
+      ? response.send(host)
       : response.sendStatus(404)
   } catch (error) {
     return response.sendStatus(500)
   }
 }
 
-module.exports = { getAllHosts, getHostsWithIdentifier }
+module.exports = { getAllHosts, getHostById }
 

@@ -2,8 +2,8 @@ const models = require('../models')
 
 const getAllPodcasts = async (request, response) => {
   try {
-    const podcasts = await models.Podcasts.findAll({
-      include: [{ model: models.Hosts }, { model: models.Companies }]
+    const podcasts = await models.podcasts.findAll({
+      include: [{ model: models.companies }, { model: models.hosts }]
     })
 
     return response.send(podcasts)
@@ -12,25 +12,26 @@ const getAllPodcasts = async (request, response) => {
   }
 }
 
-const getPodcastsByIdentifier = async (request, response) => {
+const getPodcastByIdentifier = async (request, response) => {
   try {
     const { identifier } = request.params
-    const podcastsByIdentifier = await models.podcasts.findAll({
-      include: [{ model: models.companies }, { model: models.hosts }],
+
+    const podcast = await models.podcasts.findOne({
       where: {
-        [models.Op.or]:
-          [{ id: { [models.Op.like]: identifier } },
-            { title: { [models.Op.like]: `%${identifier.toLowerCase()}%` } }
-          ]
-      }
+        [models.Sequelize.Op.or]: [
+          { id: identifier },
+          { title: { [models.Sequelize.Op.like]: `%${identifier}%` } },
+        ]
+      },
+      include: [{ model: models.companies }, { model: models.hosts }],
     })
 
-    return podcastsByIdentifier
-      ? response.send(podcastsByIdentifier)
+    return podcast
+      ? response.send(podcast)
       : response.sendStatus(404)
   } catch (error) {
     return response.sendStatus(500)
   }
 }
 
-module.exports = { getAllPodcasts, getPodcastsByIdentifier }
+module.exports = { getAllPodcasts, getPodcastByIdentifier }

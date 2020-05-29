@@ -1,18 +1,20 @@
+
 const express = require('express')
-const { getAllHosts, getHostsByIdentifier } = require('./controllers/hosts.js')
-const { getAllCompanies, getCompaniesByIdentifier } = require('./controllers/companies.js')
-const { getAllPodcasts, getAllPodcastsByIdentiier } = require('./controllers/podcasts.js')
+const { getAllCompanies, getCompanyByIdentifier } = require('./controllers/companies')
+const { getAllHosts, getHostById } = require('./controllers/hosts')
+const { getAllPodcasts, getPodcastByIdentifier } = require('./controllers/podcasts')
 
 const app = express()
 
 app.get('/companies', getAllCompanies)
-app.get('/companies/:identifier', getCompaniesByIdentifier)
-app.get('/hosts', getAllHosts)
-app.get('/hosts/:identifier', getHostsByIdentifier)
-app.get('/podcasts', getAllPodcasts)
-app.get('/podcasts/:identifier', getAllPodcastsByIdentiier)
+app.get('/companies/:identifier', getCompanyByIdentifier)
 
-app.listen(5500, () => {
-  // eslint-disable-next-line no-console
-  console.log('Listening on port 5500...')
+app.get('/hosts', getAllHosts)
+app.get('/hosts/:id', getHostById)
+
+app.get('/podcasts', getAllPodcasts)
+app.get('/podcasts/:identifier', getPodcastByIdentifier)
+
+app.listen(8820, () => {
+  console.log('Listening on port 8820...') // eslint-disable-line no-console
 })
