@@ -1,10 +1,11 @@
 {
-  "name": "schittscreek-api",
+  "name": "my-favorite-podcasts-api",
   "version": "1.0.0",
-  "description": "## schittscreek-api",
+  "description": "## my-favorite-podcasts-api",
   "main": ".index.js",
   "scripts": {
     "dev": "./node_modules/.bin/nodemon index.js",
+    "dev:migrate": "./node_modules/.bin/env-cmd ./node_modules/.bin/sequelize db:migrate --env development --config ./configs/sequelize.js",
     "eslint": "./node_modules/.bin/eslint --format codeframe .",
     "lint": "npm run puglint && npm run eslint",
     "lint:fix": "./node_modules/.bin/eslint --fix --format codeframe --fix .",
@@ -12,21 +13,29 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BMAnderson1913/schittscreek-api.git"
+    "url": "git+https://github.com/BMAnderson1913/my-favorite-podcasts-api.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BMAnderson1913/schittscreek-api/issues"
+    "url": "https://github.com/BMAnderson1913/my-favorite-podcasts-api/issues"
   },
-  "homepage": "https://github.com/BMAnderson1913/schittscreek-api#readme",
+  "homepage": "https://github.com/BMAnderson1913/my-favorite-podcasts-api#readme",
   "devDependencies": {
+    "chai": "^4.2.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^6.8.0",
-    "nodemon": "^2.0.2"
+    "mocha": "^7.2.0",
+    "nodemon": "^2.0.2",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "pug": "^2.0.4"
+    "mysql2": "^2.1.0",
+    "pug": "^2.0.4",
+    "sequelize": "^5.21.11",
+    "sequelize-cli": "^5.5.1"
   }
 }

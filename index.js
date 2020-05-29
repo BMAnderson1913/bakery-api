@@ -1,20 +1,18 @@
 const express = require('express')
-const characterData = require('./schittscreek')
+const { getAllHosts, getHostsByIdentifier } = require('./controllers/hosts.js')
+const { getAllCompanies, getCompaniesByIdentifier } = require('./controllers/companies.js')
+const { getAllPodcasts, getAllPodcastsByIdentiier } = require('./controllers/podcasts.js')
 
 const app = express()
 
-app.use(express.static('public'))
+app.get('/companies', getAllCompanies)
+app.get('/companies/:identifier', getCompaniesByIdentifier)
+app.get('/hosts', getAllHosts)
+app.get('/hosts/:identifier', getHostsByIdentifier)
+app.get('/podcasts', getAllPodcasts)
+app.get('/podcasts/:identifier', getAllPodcastsByIdentiier)
 
-app.set('view engine', 'pug')
-
-app.get('/', (request, response) => {
-  return response.render('index', { characterData })
-})
-
-app.all('*', (request, response) => {
-  return response.sendStatus(404)
-})
-
-app.listen(4053, () => {
-  console.log('Listening on 4053...') // eslint-disable-line no-console
+app.listen(5500, () => {
+  // eslint-disable-next-line no-console
+  console.log('Listening on port 5500...')
 })
