@@ -12,18 +12,16 @@ const getAllPodcasts = async (request, response) => {
   }
 }
 
-const getPodcastByIdentifier = async (request, response) => {
+const getPodcastByName = async (request, response) => {
   try {
-    const { identifier } = request.params
+    const { podcastName } = request.params
 
-    const podcast = await models.podcasts.findOne({
+    const podcast = await models.podcasts.findAll({
       where: {
-        [models.Sequelize.Op.or]: [
-          { id: identifier },
-          { title: { [models.Sequelize.Op.like]: `%${identifier}%` } },
-        ]
+        podcastName: { [models.Sequelize.Op.like]: `%${podcastName}%` }
       },
-      include: [{ model: models.companies }, { model: models.hosts }],
+
+      include: [{ model: models.hosts }, { model: models.companies }]
     })
 
     return podcast
@@ -33,5 +31,25 @@ const getPodcastByIdentifier = async (request, response) => {
     return response.sendStatus(500)
   }
 }
+const addNewPodcast = async (request, response) => {
+  try {
+    const {
+      podcastName, numberOfEpisodes, applePodcastsRating, companyId
+    } = request.body
 
-module.exports = { getAllPodcasts, getPodcastByIdentifier }
+    if (!podcastName || !numberOfEpisodes || !applePodcastsRating || !companyId) {
+      return response.status(400)
+        .send('Please complete all fields.')
+    }
+
+    const newPodcast = await models.podcasts.create({
+      podcastName, numberOfEpisodes, applePodcastsRating, companyId
+    })
+
+    return response.status(201).send(newPodcast)
+  } catch (error) {
+    return response.status(500).send('Unable to add new podcast. Please try again.')
+  }
+}
+
+module.exports = { getAllPodcasts, getPodcastByName, addNewPodcast }

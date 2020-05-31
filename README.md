@@ -1,4 +1,4 @@
-# schittscreek-api
+# my-favorite-podcasts-api
 
 You will be building the front-end for your API site, providing documentation for using the API you will be building.
 
@@ -14,3 +14,21 @@ Run npm test, all tests should pass
 Run npm run dev, all necessary migrations should run and the server should spin up and be listening without error
 I will then exercise every route documented in your front-end, as shown in your documentation, all routes should work as expected
 Finally, I will review your code for readability and cleanliness
+
+Add New Podcast
+POST:
+{
+"podcastName": "Next Question with Katie Couric",
+"numberOfEpisodes": "141",
+"applePodcastsRating": "4.5",
+"companyId": "4"
+}
+
+Add New Host
+POST:
+{
+"firstName": "Katie",
+"lastName": "Couric"
+}
+
+

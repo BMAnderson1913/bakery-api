@@ -1,7 +1,23 @@
-const podcastHosts = (connection, Sequelize, hosts, podcasts) => {
+const podcastHosts = (connection, sequelize, hosts, podcasts) => {
   return connection.define('podcastHosts', {
-    podcastsId: { type: Sequelize.INTEGER, references: { model: podcasts, key: 'id' } },
-    hostsId: { type: Sequelize.INTEGER, references: { model: hosts, key: 'id' } },
+    hostId: {
+      type: sequelize.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: { model: hosts, key: 'id' }
+    },
+    podcastId: {
+      type: sequelize.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: { model: podcasts, key: 'id' }
+    },
+  }, {
+    defaultScope: {
+      attributes: { exclude: ['updatedAt', 'deletedAt', 'createdAt'] }
+    }
+  }, {
+    paranoid: true,
   })
 }
 

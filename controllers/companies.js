@@ -10,20 +10,21 @@ const getAllCompanies = async (request, response) => {
   }
 }
 
-const getCompanyByIdentifier = async (request, response) => {
+const getCompanyByName = async (request, response) => {
   try {
     const { identifier } = request.params
 
-    const company = await models.companies.findOne({
+    const company = await models.companies.findAll({
       where: {
         [models.Sequelize.Op.or]: [
           { id: identifier },
           { companyName: { [models.Sequelize.Op.like]: `%${identifier}%` } },
         ]
       },
+
       include: [{
         model: models.podcasts,
-        include: [{ model: models.hosts }]
+        include: [{ model: models.hosts }],
       }]
     })
 
@@ -35,4 +36,7 @@ const getCompanyByIdentifier = async (request, response) => {
   }
 }
 
-module.exports = { getAllCompanies, getCompanyByIdentifier }
+module.exports = { getAllCompanies, getCompanyByName }
+
+
+

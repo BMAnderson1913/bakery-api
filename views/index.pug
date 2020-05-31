@@ -3,66 +3,76 @@ head
     link(rel="stylesheet" href="/css/styles.css")
 
     body
-     h1.title Welcome to Schitt's Creek!
-      h2 Select a Method:
+     h1.title Looking for a Podcast Recommendation?
+      h2 Here are some of my favorite podcasts:
       li.methodsInfo 
         p 
-          ul.methods GET/allCharacters
+          ul.methods GET/podcasts
         div#getAll
             p Method: GET 
-            p Route: http://localhost:4053/characters/allCharacters 
+            p Route: http://localhost:8820/podcasts
             p Headers:   
-            p Description: Returns a list of all of the characters in Schitt's Creek.
+            p Description: Returns a list of my favorite podcasts.
       li.methodsInfo 
         p 
-          ul.methods GET/characterByName
+          ul.methods GET/podcasts/podcastName
         div 
             p Method: GET 
-            p Route: http://localhost:4053/characters/characterByName 
+            p Route: http://localhost:8820/podcasts/office
             p Headers:   
-            p Description: Returns the character with the name provided in the route.  
+            p Description: Returns the podcast(s) with the name (or partial name) provided in the route.  This example will return the podcast Office Ladies.
       li.methodsInfo 
         p
-          ul.methods GET/characterByQuote
+          ul.methods POST/podcasts
         div 
             p Method: GET 
-            p Route: http://localhost:4053/characters/characterByQuote
-            p Headers:   
-            p Description: Returns the character associated with the provided quote. 
+            p Route: http://localhost:8820/podcasts
+            p JSON: {"podcastName": "Next Question with Katie Couric",
+            p "numberOfEpisodes": "141", "applePodcastsRating": "4.5", "companyId": "4"}
+            p Description: Adds the podcast 'Next Question with Katie Couric' to the podcast list.
       li.methodsInfo 
         p 
-          ul.methods GET/characterByOccupation
+          ul.methods GET/companies
         div 
             p Method: GET 
-            p Route: http://localhost:4053/characters/characterByOccupation
+            p Route: http://localhost:8820/companies
             p Headers:   
-            p Description: Returns the character associated with the provided occupation.
+            p Description: Returns a list of companies that produce the podcasts on my favorites list.
       li.methodsInfo 
         p 
-          ul.methods GET/characterbyActor
+          ul.methods GET/companyByName
         div 
-              p Method: GET 
-              p Route: http://localhost:4053/characters/characterbyActor
-              p Headers:    
-              p Description: Returns the character associated with the provided actor. 
+            p Method: GET 
+            p Route: http://localhost:8820/companies/Earwolf
+            p Headers:    
+            p Description: Returns the company (or companies) with the name (or partial name) provided in the route.  
+            p This example will return the company 'Earwolf' and a list of the podcasts they produce along with their hosts. 
       li.methodsInfo
         p
-          ul.methods POST/allCharacters
+          ul.methods GET/getAllHosts
         div 
-            p Method: POST 
-            p Route: http://localhost:4053/characters/allCharacters
-            p Headers: Content-Type application/json
-            p Required Fields: { "name": "Ted Mullens", "occupation": "Veterinarian", "quote": "It's always gifts for the dogs, and never for me." , "playedBy": "Dustin Milligan" }
-            p Description: Creates a new character from the data provided in the body. 
+            p Method: GET 
+            p Route: http://localhost:8820/hosts
+            p Headers: 
+            p Description: Returns a list of hosts that host the podcasts on my favorites list.
       li.methodsInfo 
         p       
-          ul.methods DELETE/characterByName
+          ul.methods GET/HostByFirstOrLastName
         div 
-            p Method: DELETE 
-            p Route: http://localhost:4053/characters/characterByName 
+            p Method: GET 
+            p Route: http://localhost:8820/hosts/Casey
             p Headers:   
-            p Description: Deletes the the character with the name provided in the route.
+            p Description: Returns the podcast (or podcasts) with the name (or partial name) provided in the route.  
+            p This example will return 'Casey Wilson', along with the name of her podcasts, all of the podcast's information and the company that produces the podcast.
       li.methodsInfo 
-         p       
-       
+        p       
+         ul.methods POST/hosts
+        div 
+            p Method: POST 
+            p Route: http://localhost:8820/hosts
+            p JSON:   {"firstName": "Katie", "lastName": "Couric"}
+            p Description: Returns the podcast (or podcasts) with the name (or partial name) provided in the route.  
+            p Adds 'Katie Couric', the host of 'Next Question with Katie Couric' to the hosts list.
+      li.methodsInfo 
+        p    
 

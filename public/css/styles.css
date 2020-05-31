@@ -2,6 +2,14 @@
   background-color: #c99e9c;
 }
 
+a,
+a:active,
+a:hover,
+a:visited {
+  color: red;
+  text-decoration-color: yellow;
+}
+
 body {
   margin: 0;
   padding: 0;

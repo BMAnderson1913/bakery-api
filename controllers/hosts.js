@@ -10,15 +10,21 @@ const getAllHosts = async (request, response) => {
   }
 }
 
-const getHostById = async (request, response) => {
+const getHostByFirstOrLastName = async (request, response) => {
   try {
-    const { id } = request.params
+    const { identifier } = request.params
 
-    const host = await models.hosts.findOne({
-      where: { id },
+    const host = await models.hosts.findAll({
+      where: {
+        [models.Sequelize.Op.or]: [
+          { id: identifier },
+          { lastName: { [models.Sequelize.Op.like]: `%${identifier}%` } },
+          { firstName: { [models.Sequelize.Op.like]: `%${identifier}%` } },
+        ]
+      },
       include: [{
         model: models.podcasts,
-        include: [{ model: models.companies }]
+        include: [{ model: models.companies }],
       }]
     })
 
@@ -30,5 +36,28 @@ const getHostById = async (request, response) => {
   }
 }
 
-module.exports = { getAllHosts, getHostById }
+const addNewHost = async (request, response) => {
+  try {
+    const {
+      firstName, lastName
+    } = request.body
+
+    if (!firstName || !lastName) {
+      return response.status(400)
+        .send('Both first and last name are required.')
+    }
+
+    const newHost = await models.hosts.create({
+      firstName, lastName
+    })
+
+    return response.status(201).send(newHost)
+  } catch (error) {
+    return response.status(500).send('Unable to add new host. Please try again.')
+  }
+}
+
+
+module.exports = { getAllHosts, getHostByFirstOrLastName, addNewHost }
+
 
