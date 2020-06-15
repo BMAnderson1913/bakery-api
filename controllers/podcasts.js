@@ -8,7 +8,7 @@ const getAllPodcasts = async (request, response) => {
 
     return response.send(podcasts)
   } catch (error) {
-    return response.sendStatus(500)
+    return response.status(500).send('Unable to retrieve podcasts, please try again.')
   }
 }
 
@@ -16,7 +16,7 @@ const getPodcastByName = async (request, response) => {
   try {
     const { podcastName } = request.params
 
-    const podcast = await models.podcasts.findAll({
+    const podcast = await models.podcasts.findOne({
       where: {
         podcastName: { [models.Sequelize.Op.like]: `%${podcastName}%` }
       },
@@ -24,24 +24,20 @@ const getPodcastByName = async (request, response) => {
       include: [{ model: models.hosts }, { model: models.companies }]
     })
 
-    return podcast
+    return podcast.length > 0
       ? response.send(podcast)
-      : response.sendStatus(404)
+      : response.status(404).send('Sorry, that is not in my list of favorite podcasts.')
   } catch (error) {
-    return response.sendStatus(500)
+    return response.status(500).send('Unable to retrieve podcasts, please try again.')
   }
 }
 const addNewPodcast = async (request, response) => {
   try {
-    const {
-      podcastName, numberOfEpisodes, applePodcastsRating, companyId
-    } = request.body
+    const { podcastName, numberOfEpisodes, applePodcastsRating, companyId } = request.body
 
     if (!podcastName || !numberOfEpisodes || !applePodcastsRating || !companyId) {
-      return response.status(400)
-        .send('Please complete all fields.')
+      return response.status(404).send('Please complete all fields.')
     }
-
     const newPodcast = await models.podcasts.create({
       podcastName, numberOfEpisodes, applePodcastsRating, companyId
     })
@@ -51,5 +47,21 @@ const addNewPodcast = async (request, response) => {
     return response.status(500).send('Unable to add new podcast. Please try again.')
   }
 }
+const deletePodcast = async (request, response) => {
+  try {
+    const { podcastName } = request.params
 
-module.exports = { getAllPodcasts, getPodcastByName, addNewPodcast }
+    const podcast = await models.podcasts.findOne({ where: { podcastName } })
+
+    if (!podcastName) return response.status(404).send('Sorry that podcast is not listed.')
+
+    await models.podcastHosts.destroy({ where: { podcastId: podcast.podcastId } })
+    await models.podcasts.destroy({ where: { podcastName } })
+
+    return response.send('Podcast has been successfully deleted.')
+  } catch (error) {
+    return response.status(500).send('Unable to delete podcast, please try again.')
+  }
+}
+
+module.exports = { getAllPodcasts, getPodcastByName, addNewPodcast, deletePodcast }

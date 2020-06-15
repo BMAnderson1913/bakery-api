@@ -6,19 +6,19 @@ const getAllCompanies = async (request, response) => {
 
     return response.send(companies)
   } catch (error) {
-    return response.sendStatus(500)
+    return response.status(500).send('Unable to retrieve companies, please try again.')
   }
 }
 
 const getCompanyByName = async (request, response) => {
   try {
-    const { identifier } = request.params
+    const { companyName } = request.params
 
     const company = await models.companies.findAll({
       where: {
         [models.Sequelize.Op.or]: [
-          { id: identifier },
-          { companyName: { [models.Sequelize.Op.like]: `%${identifier}%` } },
+          // { id: companyName },
+          { companyName: { [models.Sequelize.Op.like]: `%${companyName}%` } },
         ]
       },
 
@@ -30,9 +30,9 @@ const getCompanyByName = async (request, response) => {
 
     return company
       ? response.send(company)
-      : response.sendStatus(404)
+      : response.status(404).send('Unable to find a company matching that name.')
   } catch (error) {
-    return response.sendStatus(500)
+    return response.status(500).send('Unable to retrieve companies, please try again.')
   }
 }
 

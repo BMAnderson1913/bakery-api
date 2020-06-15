@@ -6,7 +6,7 @@ const getAllHosts = async (request, response) => {
 
     return response.send(hosts)
   } catch (error) {
-    return response.sendStatus(500)
+    return response.status(500).send('Unable to retrieve podcast hosts, please try again.')
   }
 }
 
@@ -14,7 +14,7 @@ const getHostByFirstOrLastName = async (request, response) => {
   try {
     const { identifier } = request.params
 
-    const host = await models.hosts.findAll({
+    const host = await models.hosts.findOne({
       where: {
         [models.Sequelize.Op.or]: [
           { id: identifier },
@@ -30,9 +30,9 @@ const getHostByFirstOrLastName = async (request, response) => {
 
     return host
       ? response.send(host)
-      : response.sendStatus(404)
+      : response.status(404).send('Sorry that host is not listed.')
   } catch (error) {
-    return response.sendStatus(500)
+    return response.status(500).send('Unable to retrieve host, please try again.')
   }
 }
 
@@ -43,8 +43,7 @@ const addNewHost = async (request, response) => {
     } = request.body
 
     if (!firstName || !lastName) {
-      return response.status(400)
-        .send('Both first and last name are required.')
+      return response.status(400).send('Both first and last name are required.')
     }
 
     const newHost = await models.hosts.create({
@@ -57,7 +56,27 @@ const addNewHost = async (request, response) => {
   }
 }
 
+const deleteHost = async (request, response) => {
+  try {
+    const { firstName, lastName } = request.body
 
-module.exports = { getAllHosts, getHostByFirstOrLastName, addNewHost }
+    const host = await models.hosts.findOne({ where: { firstName, lastName } })
+
+    if (!firstName || !lastName) return response.status(404).send('Sorry that host is not listed.')
+
+    await models.podcastHosts.destroy({ where: { hostId: host.id } })
+
+    await models.hosts.destroy({ where: { firstName, lastName } })
+
+    return response.send('Host has been successfully deleted.')
+  } catch (error) {
+    return response.status(500).send('Unable to delete host, please try again.')
+  }
+}
+
+
+
+
+module.exports = { getAllHosts, getHostByFirstOrLastName, addNewHost, deleteHost }
 
 
