@@ -22,10 +22,7 @@ const getCompanyByName = async (request, response) => {
         ]
       },
 
-      include: [{
-        model: models.podcasts,
-        include: [{ model: models.hosts }],
-      }]
+      include: [{ model: models.podcasts }],
     })
 
     return company

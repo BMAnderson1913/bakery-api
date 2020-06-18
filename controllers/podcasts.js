@@ -21,7 +21,7 @@ const getPodcastByName = async (request, response) => {
         podcastName: { [models.Sequelize.Op.like]: `%${podcastName}%` }
       },
 
-      include: [{ model: models.hosts }, { model: models.companies }]
+      include: [{ model: models.companies }]
     })
 
     return podcast
@@ -47,21 +47,6 @@ const addNewPodcast = async (request, response) => {
     return response.status(500).send('Unable to add new podcast. Please try again.')
   }
 }
-const deletePodcast = async (request, response) => {
-  try {
-    const { podcastName } = request.params
 
-    const podcast = await models.podcasts.findOne({ where: { podcastName } })
 
-    if (!podcastName) return response.status(404).send('Sorry that podcast is not listed.')
-
-    await models.podcastHosts.destroy({ where: { podcastId: podcast.podcastId } })
-    await models.podcasts.destroy({ where: { podcastName } })
-
-    return response.send('Podcast has been successfully deleted.')
-  } catch (error) {
-    return response.status(500).send('Unable to delete podcast, please try again.')
-  }
-}
-
-module.exports = { getAllPodcasts, getPodcastByName, addNewPodcast, deletePodcast }
+module.exports = { getAllPodcasts, getPodcastByName, addNewPodcast }
