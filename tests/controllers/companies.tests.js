@@ -54,90 +54,94 @@ describe('Controllers - companies', () => {
     sandbox.restore()
   })
 
-  describe('companies', () => {
-    describe('getAllCompanies', () => {
-      it('returns a list of companies', async () => {
-        stubbedCompaniesFindAll.returns(allCompanies)
+  describe('getAllCompanies', () => {
+    it('returns a list of companies', async () => {
+      stubbedCompaniesFindAll.returns(allCompanies)
 
-        await getAllCompanies({}, response)
+      await getAllCompanies({}, response)
 
-        expect(stubbedCompaniesFindAll).to.have.been.calledWith()
-        expect(response.send).to.have.been.calledWith(allCompanies)
-      })
+      expect(stubbedCompaniesFindAll).to.have.been.calledWith()
+      expect(response.send).to.have.been.calledWith(allCompanies)
+    })
 
-      it('returns a 500 error when the database call fails', async () => {
-        stubbedCompaniesFindAll.throws('ERROR!')
+    it('returns a 500 error when the database call fails', async () => {
+      stubbedCompaniesFindAll.throws('ERROR!')
 
-        await getAllCompanies({}, response)
+      await getAllCompanies({}, response)
 
-        expect(stubbedCompaniesFindAll).to.have.been.calledWith()
-        expect(response.status).to.have.been.calledWith(500)
-        expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve companies, please try again.')
+      expect(stubbedCompaniesFindAll).to.have.been.calledWith()
+      expect(response.status).to.have.been.calledWith(500)
+      expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve companies, please try again.')
+    })
+  })
+
+  describe('getCompanyByName', () => {
+    it('returns the company with the name provided', async () => {
+      stubbedCompaniesFindOne.returns(companyByName)
+
+      const request = { params: { companyName: 'Cadence13' } }
+
+      await getCompanyByName(request, response)
+
+      expect(stubbedCompaniesFindOne).to.be.calledWith({
+        where: {
+          [models.Sequelize.Op.or]: [
+            // { id: companyName },
+            { companyName: { [models.Sequelize.Op.like]: `%${request.params.companyName}%` } },
+          ]
+        },
+
+        include: [{
+          model: models.podcasts,
+          include: [{ model: models.hosts }],
+        }]
       })
     })
 
-    describe('getCompanyByName', () => {
-      it('returns the company with the name provided', async () => {
-        stubbedCompaniesFindAll.returns(companyByName)
+    it('returns a 404 when no matching company can be found', async () => {
+      stubbedCompaniesFindOne.returns(null)
 
-        const request = { params: { companyName: 'Cadence13' } }
+      const request = { params: { identifier: 'Cadence13' } }
 
-        await getCompanyByName(request, response)
+      await getCompanyByName(request, response)
 
-        expect(stubbedCompaniesFindAll).to.be.calledWith({
-          where: {
-            companyName: { [models.Sequelize.Op.like]: `%${companyByName.companyName}%` }
-          },
-          include: [{ model: models.hosts }, { model: models.podcasts }]
-        })
-        console.log(companyByName)
-
-        it('returns a 404 when no matching company can be found', async () => {
-          stubbedCompaniesFindOne.returns(null)
-
-          const request = { params: { identifier: 'Cadence13' } }
-
-          await getCompanyByName(request, response)
-
-          expect(stubbedCompaniesFindOne).to.have.been.calledWith({
-            where: {
-              [models.Sequelize.Op.or]: [
-                { id: request.params.identifier },
-                { companyName: { [models.Sequelize.Op.like]: `%${request.params.identifier}%` } }
-              ]
-            },
-            include: [{
-              model: models.podcasts,
-              include: [{ model: models.hosts }],
-            }]
-          })
-          expect(stubbedStatus).to.have.been.calledWith(404)
-          expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to find a company matching that name.')
-        })
-
-        it('returns a 500 error when the database calls fails', async () => {
-          stubbedCompaniesFindOne.throws('ERROR!')
-
-          const request = { params: { identifier: 'Cadence13' } }
-
-          await getCompanyByName(request, response)
-
-          expect(stubbedCompaniesFindOne).to.have.been.calledWith({
-            where: {
-              [models.Sequelize.Op.or]: [
-                { id: request.params.identifier },
-                { companyName: { [models.Sequelize.Op.like]: `%${request.params.identifier}%` } }
-              ]
-            },
-            include: [{
-              model: models.podcasts,
-              include: [{ model: models.hosts }],
-            }]
-          })
-          expect(response.status).to.have.been.calledWith(500)
-          expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve companies, please try again.')
-        })
+      expect(stubbedCompaniesFindOne).to.have.been.calledWith({
+        where: {
+          [models.Sequelize.Op.or]: [
+            { id: request.params.identifier },
+            { companyName: { [models.Sequelize.Op.like]: `%${request.params.identifier}%` } }
+          ]
+        },
+        include: [{
+          model: models.podcasts,
+          include: [{ model: models.hosts }],
+        }]
       })
+      expect(stubbedStatus).to.have.been.calledWith(404)
+      expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to find a company matching that name.')
+    })
+
+    it('returns a 500 error when the database calls fails', async () => {
+      stubbedCompaniesFindOne.throws('ERROR!')
+
+      const request = { params: { identifier: 'Cadence13' } }
+
+      await getCompanyByName(request, response)
+
+      expect(stubbedCompaniesFindOne).to.have.been.calledWith({
+        where: {
+          [models.Sequelize.Op.or]: [
+            { id: request.params.identifier },
+            { companyName: { [models.Sequelize.Op.like]: `%${request.params.identifier}%` } }
+          ]
+        },
+        include: [{
+          model: models.podcasts,
+          include: [{ model: models.hosts }],
+        }]
+      })
+      expect(response.status).to.have.been.calledWith(500)
+      expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve companies, please try again.')
     })
   })
 })

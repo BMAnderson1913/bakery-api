@@ -12,13 +12,13 @@ const getAllCompanies = async (request, response) => {
 
 const getCompanyByName = async (request, response) => {
   try {
-    const { companyName } = request.params
+    const { identifier } = request.params
 
-    const company = await models.companies.findAll({
+    const company = await models.companies.findOne({
       where: {
         [models.Sequelize.Op.or]: [
-          // { id: companyName },
-          { companyName: { [models.Sequelize.Op.like]: `%${companyName}%` } },
+          { id: identifier },
+          { companyName: { [models.Sequelize.Op.like]: `%${identifier}%` } },
         ]
       },
 

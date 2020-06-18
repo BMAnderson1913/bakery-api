@@ -7,7 +7,7 @@ const {
   after, afterEach, before, beforeEach, describe, it
 } = require('mocha')
 
-const { getAllHosts, getHostByFirstOrLastName, addNewHost, deleteHost } = require('../../controllers/hosts')
+const { getAllHosts, getHostByFirstOrLastName, addNewHost } = require('../../controllers/hosts')
 
 const {
   allHosts,
@@ -28,11 +28,9 @@ describe('Controllers - hosts', () => {
   let stubbedHostsFindAll
   let stubbedHostsFindOne
   let stubbedHostsCreate
-  let stubbedHostsDestroy
 
   before(() => {
     sandbox = sinon.createSandbox()
-    stubbedHostsDestroy = sandbox.stub(models.hosts, 'destroy')
     stubbedHostsFindAll = sandbox.stub(models.hosts, 'findAll')
     stubbedHostsFindOne = sandbox.stub(models.hosts, 'findOne')
     stubbedHostsCreate = sandbox.stub(models.hosts, 'create')
@@ -59,74 +57,84 @@ describe('Controllers - hosts', () => {
     sandbox.restore()
   })
 
-  describe('hosts', () => {
-    describe('getAllHosts', () => {
-      it('returns a list of podcast hosts', async () => {
-        stubbedHostsFindAll.returns(allHosts)
+  describe('getAllHosts', () => {
+    it('returns a list of podcast hosts', async () => {
+      stubbedHostsFindAll.returns(allHosts)
 
+      await getAllHosts({}, response)
 
-        await getAllHosts({}, response)
+      expect(stubbedHostsFindAll).to.have.been.calledWith()
+      expect(response.send).to.have.been.calledWith(allHosts)
+    })
 
-        expect(stubbedHostsFindAll).to.have.been.calledWith()
-        expect(response.send).to.have.been.calledWith(allHosts)
-      })
+    it('returns a 500 error when the database call fails', async () => {
+      stubbedHostsFindAll.throws('ERROR!')
 
-      it('returns a 500 error when the database call fails', async () => {
-        stubbedHostsFindAll.throws('ERROR!')
+      await getAllHosts({}, response)
 
-        await getAllHosts({}, response)
+      expect(stubbedHostsFindAll).to.have.been.calledWith()
+      expect(response.status).to.have.been.calledWith(500)
+      expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve podcast hosts, please try again.')
+    })
+  })
 
-        expect(stubbedHostsFindAll).to.have.been.calledWith()
-        expect(response.status).to.have.been.calledWith(500)
-        expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve podcast hosts, please try again.')
+  describe('getHostByFirstOrLastName', () => {
+    it('returns the host(s) associated with the name provided', async () => {
+      stubbedHostsFindOne.returns(hostByName)
+
+      const request = { params: { identifier: 'Kramer' } }
+
+      await getHostByFirstOrLastName(request, response)
+
+      expect(stubbedHostsFindOne).to.be.calledWith({
+        where: {
+          [models.Sequelize.Op.or]: [
+            // { id: identifier },
+            { lastName: { [models.Sequelize.Op.like]: '%Kramer%' } },
+            { firstName: { [models.Sequelize.Op.like]: '%Kramer%' } },
+          ]
+        // },
+        // include: [{
+        //   model: models.podcasts,
+        //   include: [{ model: models.companies }],
+        }
+        // ]
       })
     })
 
-    describe('getHostByFirstOrLastName', () => {
-      it('returns the host(s) associated with the name provided', async () => {
-        stubbedHostsFindOne.returns(hostByName)
-        const request = { params: { id: 'Kramer' } }
 
-        await getHostByFirstOrLastName(request, response)
+    it('returns a 404 when no host can be found matching the name provided', async () => {
+      stubbedHostsFindOne.returns(null)
 
-        expect(stubbedHostsFindOne).to.be.calledWith({
-          where: { lastName: request.params.id, firstName: request.params.id },
-          include: [{
-            model: models.podcasts,
-            include: [{ model: models.companies }],
-          }]
-        })
-        expect(stubbedSend).to.have.been.calledWith(hostByName)
-        // expect(stubbedStatus).to.have.been.calledWith(200),
-        console.log(hostByName)
+      const request = { params: { identifier } }
+
+      await getHostByFirstOrLastName(request, response)
+
+      expect(stubbedHostsFindOne).to.be.calledWith({
+        where: {
+          [models.Sequelize.Op.or]: [
+            { identifier: 'Kramer' },
+            { lastName: { [models.Sequelize.Op.like]: `%${request.params.identifier}%` } },
+            { firstName: { [models.Sequelize.Op.like]: `%${request.params.identifier}%` } },
+          ]
+        },
+        include: [{
+          model: models.podcasts,
+          include: [{ model: models.companies }],
+        }]
       })
 
-      it('returns a 404 when no host can be found matching the name provided', async () => {
-        stubbedHostsFindOne.returns(null)
+      expect(stubbedStatus).to.have.been.calledWith(404)
+      expect(stubbedStatusDotSend).to.have.been.calledWith('Sorry that host is not listed.')
+    })
 
-        const request = { params: { id: 'Kramer' } }
+    it('returns a 500 error when the database call fails', async () => {
+      stubbedHostsFindOne.throws('ERROR!')
 
-        await getHostByFirstOrLastName(request, response)
+      await getHostByFirstOrLastName({}, response)
 
-        expect(stubbedHostsFindOne).to.be.calledWith({
-          where: { lastName: request.params.id, firstName: request.params.id },
-          include: [{
-            model: models.podcasts,
-            include: [{ model: models.companies }],
-          }]
-        })
-        expect(stubbedStatus).to.have.been.calledWith(404)
-        expect(stubbedStatusDotSend).to.have.been.calledWith('Sorry that host is not listed.')
-      })
-
-      it('returns a 500 error when the database call fails', async () => {
-        stubbedHostsFindOne.throws('ERROR!')
-
-        await getHostByFirstOrLastName({}, response)
-
-        expect(response.status).to.have.been.calledWith(500)
-        expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve host, please try again.')
-      })
+      expect(response.status).to.have.been.calledWith(500)
+      expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to retrieve host, please try again.')
     })
   })
 
@@ -167,13 +175,3 @@ describe('Controllers - hosts', () => {
     expect(stubbedStatusDotSend).to.have.been.calledWith('Unable to add new host. Please try again.')
   })
 })
-
-
-
-
-
-
-
-
-
-

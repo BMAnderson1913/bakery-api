@@ -16,7 +16,7 @@ const getPodcastByName = async (request, response) => {
   try {
     const { podcastName } = request.params
 
-    const podcast = await models.podcasts.findOne({
+    const podcast = await models.podcasts.findAll({
       where: {
         podcastName: { [models.Sequelize.Op.like]: `%${podcastName}%` }
       },
@@ -24,7 +24,7 @@ const getPodcastByName = async (request, response) => {
       include: [{ model: models.hosts }, { model: models.companies }]
     })
 
-    return podcast.length > 0
+    return podcast
       ? response.send(podcast)
       : response.status(404).send('Sorry, that is not in my list of favorite podcasts.')
   } catch (error) {
