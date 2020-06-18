@@ -10,13 +10,13 @@ module.exports = {
     await queryInterface.createTable('companies', {
       id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
       companyName: { type: Sequelize.STRING, allowNull: false },
-      createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'), },
+      createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
-      deletedAt: { type: Sequelize.DATE, },
+      deletedAt: { type: Sequelize.DATE },
     })
 
     return queryInterface.createTable('podcasts', {
@@ -25,13 +25,13 @@ module.exports = {
       numberOfEpisodes: { type: Sequelize.INTEGER, allowNull: false },
       applePodcastsRating: { type: Sequelize.INTEGER, allowNull: false },
       companyId: { type: Sequelize.INTEGER, references: { model: 'companies', key: 'id' } },
-      createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'), },
+      createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },
-      deletedAt: { type: Sequelize.DATE, },
+      deletedAt: { type: Sequelize.DATE },
     })
   },
 
@@ -46,5 +46,5 @@ module.exports = {
     await queryInterface.dropTable('podcasts')
 
     return queryInterface.dropTable('companies')
-  }
+  },
 }

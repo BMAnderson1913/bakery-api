@@ -16,13 +16,15 @@ const getCompanyByName = async (request, response) => {
 
     const company = await models.companies.findOne({
       where: {
-        [models.Sequelize.Op.or]: [
+        [models.Op.or]: [
           { id: identifier },
-          { companyName: { [models.Sequelize.Op.like]: `%${identifier}%` } },
-        ]
+          { companyName: { [models.Op.like]: `%${identifier}%` } },
+        ],
       },
 
-      include: [{ model: models.podcasts }],
+      include: [{
+        model: models.podcasts,
+      }],
     })
 
     return company
@@ -34,6 +36,3 @@ const getCompanyByName = async (request, response) => {
 }
 
 module.exports = { getAllCompanies, getCompanyByName }
-
-
-

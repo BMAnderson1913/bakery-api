@@ -1,9 +1,9 @@
-const models = require('../models')
+import models from '../models'
 
-const getAllPodcasts = async (request, response) => {
+export const getAllPodcasts = async (request, response) => {
   try {
     const podcasts = await models.podcasts.findAll({
-      include: [{ model: models.companies }, { model: models.hosts }]
+      include: [{ model: models.companies }],
     })
 
     return response.send(podcasts)
@@ -12,16 +12,16 @@ const getAllPodcasts = async (request, response) => {
   }
 }
 
-const getPodcastByName = async (request, response) => {
+export const getPodcastByName = async (request, response) => {
   try {
     const { podcastName } = request.params
 
     const podcast = await models.podcasts.findAll({
       where: {
-        podcastName: { [models.Sequelize.Op.like]: `%${podcastName}%` }
+        podcastName: { [models.Op.like]: `%${podcastName}%` },
       },
 
-      include: [{ model: models.companies }]
+      include: [{ model: models.companies }],
     })
 
     return podcast
@@ -31,7 +31,7 @@ const getPodcastByName = async (request, response) => {
     return response.status(500).send('Unable to retrieve podcasts, please try again.')
   }
 }
-const addNewPodcast = async (request, response) => {
+export const addNewPodcast = async (request, response) => {
   try {
     const { podcastName, numberOfEpisodes, applePodcastsRating, companyId } = request.body
 
@@ -39,7 +39,7 @@ const addNewPodcast = async (request, response) => {
       return response.status(404).send('Please complete all fields.')
     }
     const newPodcast = await models.podcasts.create({
-      podcastName, numberOfEpisodes, applePodcastsRating, companyId
+      podcastName, numberOfEpisodes, applePodcastsRating, companyId,
     })
 
     return response.status(201).send(newPodcast)
@@ -47,6 +47,3 @@ const addNewPodcast = async (request, response) => {
     return response.status(500).send('Unable to add new podcast. Please try again.')
   }
 }
-
-
-module.exports = { getAllPodcasts, getPodcastByName, addNewPodcast }

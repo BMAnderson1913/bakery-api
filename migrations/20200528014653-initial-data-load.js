@@ -50,5 +50,5 @@ module.exports = {
     await queryInterface.bulkDelete('podcasts')
 
     return queryInterface.bulkDelete('companies')
-  }
+  },
 }
