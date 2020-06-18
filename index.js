@@ -1,5 +1,9 @@
+
 const express = require('express')
-const schittscreek = require('./schittscreek')
+const bodyParser = require('body-parser')
+const { getAllCompanies, getCompanyByName } = require('./controllers/companies')
+const { getAllHosts, getHostByFirstOrLastName, addNewHost } = require('./controllers/hosts')
+const { getAllPodcasts, getPodcastByName, addNewPodcast } = require('./controllers/podcasts')
 
 const app = express()
 
@@ -7,19 +11,20 @@ app.set('view engine', 'pug')
 app.use(express.static('public'))
 
 app.get('/', (request, response) => {
-  return response.render('index', { schittscreek })
+  return response.status(200).render('index')
 })
 
-// app.get('/characterData/:id', (request, response) => {
-//   const name = schittscreek.name.find((season) => name.number === parseInt(request.params.id))
+app.get('/companies', getAllCompanies)
+app.get('/companies/:identifier', getCompanyByName)
 
-//   return response.render('name', { name })
-// })
+app.get('/hosts', getAllHosts)
+app.get('/hosts/:identifier', getHostByFirstOrLastName)
+app.post('/hosts/', bodyParser.json(), addNewHost)
 
-app.all('*', (request, response) => {
-  return response.sendStatus(404)
-})
+app.get('/podcasts', getAllPodcasts)
+app.get('/podcasts/:podcastName', getPodcastByName)
+app.post('/podcasts/', bodyParser.json(), addNewPodcast)
 
-app.listen(8009, () => {
-  console.log('Listening on 8009...') // eslint-disable-line no-console
+app.listen(8820, () => {
+  console.log('Listening on port 8820...') // eslint-disable-line no-console
 })
