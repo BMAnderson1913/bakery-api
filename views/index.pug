@@ -1,21 +1,78 @@
 html
-  include partials/head
+head
+    link(rel="stylesheet" href="/css/styles.css")
 
-  body
-    h1= schittscreek.name
+    body
+     h1.title Looking for a Podcast Recommendation?
+      h2 Here are some of my favorite podcasts:
+      li.methodsInfo 
+        p 
+          ul.methods GET/podcasts
+        div#getAll
+            p Method: GET 
+            p Route: http://localhost:8820/podcasts
+            p Headers:   
+            p Description: Returns a list of my favorite podcasts.
+      li.methodsInfo 
+        p 
+          ul.methods GET/podcasts/podcastName
+        div 
+            p Method: GET 
+            p Route: http://localhost:8820/podcasts/office
+            p Headers:   
+            p Description: Returns the podcast(s) with the name (or partial name) provided in the route.  This example will return the podcast Office Ladies.
+      li.methodsInfo 
+        p
+          ul.methods POST/podcasts
+        div 
+            p Method: GET 
+            p Route: http://localhost:8820/podcasts
+            p JSON: {"podcastName": "Next Question with Katie Couric",
+            p "numberOfEpisodes": "141", "applePodcastsRating": "4.5", "companyId": "4"}
+            p Description: Adds the podcast 'Next Question with Katie Couric' to the podcast list.
+      li.methodsInfo 
+        p 
+          ul.methods GET/companies
+        div 
+            p Method: GET 
+            p Route: http://localhost:8820/companies
+            p Headers:   
+            p Description: Returns a list of companies that produce the podcasts on my favorites list.
+      li.methodsInfo 
+        p 
+          ul.methods GET/companyByName
+        div 
+            p Method: GET 
+            p Route: http://localhost:8820/companies/Earwolf
+            p Headers:    
+            p Description: Returns the company with the name (or partial name) provided in the route.  
+            p This example will return the company 'Earwolf' and a list of the podcasts they produce along with their hosts. 
+      li.methodsInfo
+        p
+          ul.methods GET/getAllHosts
+        div 
+            p Method: GET 
+            p Route: http://localhost:8820/hosts
+            p Headers: 
+            p Description: Returns a list of hosts that host the podcasts on my favorites list.
+      li.methodsInfo 
+        p       
+          ul.methods GET/HostByFirstOrLastName
+        div 
+            p Method: GET 
+            p Route: http://localhost:8820/hosts/Casey
+            p Headers:   
+            p Description: Returns the podcast (or podcasts) with the name (or partial name) provided in the route.  
+            p This example will return 'Casey Wilson', along with the name of her podcasts, all of the podcast's information and the company that produces the podcast.
+      li.methodsInfo 
+        p       
+         ul.methods POST/hosts
+        div 
+            p Method: POST 
+            p Route: http://localhost:8820/hosts
+            p JSON:   {"firstName": "Katie", "lastName": "Couric"}
+            p Description: Returns the podcast (or podcasts) with the name (or partial name) provided in the route.  
+            p Adds 'Katie Couric', the host of 'Next Question with Katie Couric' to the hosts list.
+      li.methodsInfo 
+        p    
 
-    h2 Occupation
-    ul
-      for occupation in schittscreek.occupation
-        li= occupation
-
-    h2 Quote
-    ul
-      for quote in schittscreek.quote
-        li= quote
-
-    h2 Played By
-    ul
-      for playedBy in schittscreek.playedBy
-        li = actor
-          

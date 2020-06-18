@@ -1,31 +1,53 @@
 {
-  "name": "schittscreek-api",
+  "name": "my-favorite-podcasts-api",
   "version": "1.0.0",
-  "description": "## schittscreek-api",
-  "main": ".index.js",
+  "description": "## my-favorite-podcasts-api",
+  "main": ".server.js",
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon index.js",
+    "dev": "./node_modules/.bin/concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "./node_modules/.bin/webpack --progress --inline --config webpack.dev.js",
+    "dev:server": "./node_modules/.bin/env-cmd ./node_modules/.bin/babel-watch server.js",
+    "dev:migrate": "./node_modules/.bin/env-cmd ./node_modules/.bin/sequelize db:migrate --env development --config ./configs/sequelize.js",
     "lint": "./node_modules/.bin/eslint --format codeframe .",
-    "lint:fix": "./node_modules/.bin/eslint --format codeframe --fix .",
-    "puglint": "./node_modules/.bin/pug-lint ."
+    "lint:fix": "./node_modules/.bin/eslint --fix --format codeframe ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BMAnderson1913/schittscreek-api.git"
+    "url": "git+https://github.com/BMAnderson1913/my-favorite-podcasts-api.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BMAnderson1913/schittscreek-api/issues"
+    "url": "https://github.com/BMAnderson1913/my-favorite-podcasts-api/issues"
   },
-  "homepage": "https://github.com/BMAnderson1913/schittscreek-api#readme",
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "nodemon": "^2.0.2"
-  },
+  "homepage": "https://github.com/BMAnderson1913/my-favorite-podcasts-api#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "pug": "^2.0.4"
+    "mysql2": "^2.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "sequelize": "^5.21.7",
+    "sequelize-cli": "^5.5.1",
+    "styled-components": "^5.1.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-styled-components": "^1.10.7",
+    "babel-watch": "^7.0.0",
+    "concurrently": "^5.2.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0"
   }
 }
